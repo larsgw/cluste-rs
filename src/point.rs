@@ -6,6 +6,9 @@ impl<const N: usize> Point<N> {
         Point(coords)
     }
 
+    /// d(x, y) as defined in Section 2 (p. 278)
+    ///
+    /// Time complexity: O(M)
     pub fn distance(&self, point: &Self) -> f64 {
         (0..N).map(|d| (self.0[d] - point.0[d]).powi(2)).sum::<f64>().sqrt()
     }

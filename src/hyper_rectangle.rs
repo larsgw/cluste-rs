@@ -20,6 +20,9 @@ impl<const N: usize> HyperRectangle<N> {
         )
     }
 
+    /// closest(x, h) as defined in Section 2 (p. 278)
+    ///
+    /// Time complexity: O(M)
     pub fn closest(&self, point: &Point<N>) -> Point<N> {
         let mut coords = [0.0; N];
         for d in 0..N {
@@ -28,10 +31,16 @@ impl<const N: usize> HyperRectangle<N> {
         Point(coords)
     }
 
+    /// d(x, h) as defined in Section 2 (p. 278)
+    ///
+    /// Time complexity: O(M)
     pub fn distance(&self, point: &Point<N>) -> f64 {
         self.closest(point).distance(point)
     }
 
+    /// width(h) as defined in Section 2 (p. 278)
+    ///
+    /// Time complexity: O(M)
     pub fn width(&self) -> Point<N> {
         let mut coords = [0.0; N];
         for d in 0..N {
