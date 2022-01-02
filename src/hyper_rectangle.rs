@@ -20,7 +20,7 @@ impl<const N: usize> HyperRectangle<N> {
         )
     }
 
-    fn closest(&self, point: &Point<N>) -> Point<N> {
+    pub fn closest(&self, point: &Point<N>) -> Point<N> {
         let mut coords = [0.0; N];
         for d in 0..N {
             coords[d] = point.0[d].clamp(self.0.0[d], self.1.0[d]);
@@ -28,8 +28,16 @@ impl<const N: usize> HyperRectangle<N> {
         Point(coords)
     }
 
-    fn distance(&self, point: &Point<N>) -> f64 {
+    pub fn distance(&self, point: &Point<N>) -> f64 {
         self.closest(point).distance(point)
+    }
+
+    pub fn width(&self) -> Point<N> {
+        let mut coords = [0.0; N];
+        for d in 0..N {
+            coords[d] = self.1.0[d] - self.0.0[d];
+        }
+        Point(coords)
     }
 }
 
@@ -58,5 +66,11 @@ mod tests {
         let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
         let point = Point([-2.0, 3.0]);
         assert_eq!(h.distance(&point), 2.23606797749979);
+    }
+
+    #[test]
+    fn hyper_rectangle_width() {
+        let h = HyperRectangle(Point([1.0, 0.0]), Point([2.0, 2.0]));
+        assert_eq!(h.width(), Point([1.0, 2.0]));
     }
 }
