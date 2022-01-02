@@ -2,7 +2,7 @@ use crate::point::Point;
 use rand::{Rng, SeedableRng};
 use rand::rngs::StdRng;
 
-/// Implements Lloyd's [k-means clustering](hthttps://en.wikipedia.org/wiki/K-means_clustering)
+/// Implements Lloyd's [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering)
 /// (Lloyd, 1982), as described in (Pelleg & Moore, 1999).
 ///
 /// # References

@@ -21,7 +21,7 @@ fn partition<const N: usize>(
 }
 
 /// Implementation of the quickselect algorithm for determining the median.
-/// Adapted from the pseudo-code on Wikipedia (https://en.wikipedia.org/wiki/Quickselect)
+/// Adapted from the pseudo-code on Wikipedia (<https://en.wikipedia.org/wiki/Quickselect>)
 pub fn median<const N: usize>(points: &[Point<N>], d: usize) -> f64 {
     let mut list = points.to_vec();
 
