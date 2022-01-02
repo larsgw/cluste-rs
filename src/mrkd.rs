@@ -3,25 +3,9 @@
 #![allow(dead_code)]
 #![allow(unreachable_code)]
 
-use crate::Point;
+use crate::hyper_rectangle::HyperRectangle;
+use crate::point::Point;
 use crate::quickselect::median;
-
-#[derive(PartialEq, Debug)]
-pub struct HyperRectangle<const N: usize> (Point<N>, Point<N>);
-
-impl<const N: usize> HyperRectangle<N> {
-    fn split(&self, d: usize, v: f64) -> (Self, Self) {
-        let mut a = self.1.clone();
-        a.0[d] = v;
-        let mut b = self.0.clone();
-        b.0[d] = v;
-
-        (
-            HyperRectangle(self.0, a),
-            HyperRectangle(b, self.1),
-        )
-    }
-}
 
 #[derive(PartialEq, Debug)]
 pub struct Tree<const N: usize> {
@@ -52,7 +36,7 @@ pub struct NonLeaf<const N: usize> {
 }
 
 impl<const N: usize> Tree<N> {
-    fn initialize(points: &[Point<N>]) -> Self {
+    pub fn initialize(points: &[Point<N>]) -> Self {
         let mut min = [f64::INFINITY; N];
         let mut max = [f64::NEG_INFINITY; N];
 
@@ -69,7 +53,7 @@ impl<const N: usize> Tree<N> {
         Self::make_node(points, h, d)
     }
 
-    fn make_node(points: &[Point<N>], h: HyperRectangle<N>, d: usize) -> Self {
+    pub fn make_node(points: &[Point<N>], h: HyperRectangle<N>, d: usize) -> Self {
         let node = if points.len() == 1 {
             Node::Leaf(points[0])
         } else {
@@ -81,7 +65,7 @@ impl<const N: usize> Tree<N> {
         Self { h, node: Box::new(node) }
     }
 
-    fn split_points(points: &[Point<N>], h: &HyperRectangle<N>, d: usize, v: f64) -> (Self, Self) {
+    pub fn split_points(points: &[Point<N>], h: &HyperRectangle<N>, d: usize, v: f64) -> (Self, Self) {
         let new_d = (d + 1) % N;
         let len = points.len();
 
@@ -106,16 +90,9 @@ impl<const N: usize> Tree<N> {
 
 #[cfg(test)]
 mod tests {
-    use crate::Point;
+    use crate::hyper_rectangle::HyperRectangle;
+    use crate::point::Point;
     use super::*;
-
-    #[test]
-    fn hyper_rectangle_split() {
-        let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
-        let (h1, h2) = h.split(1, 1.0);
-        assert_eq!(h1, HyperRectangle(Point([0.0, 0.0]), Point([2.0, 1.0])));
-        assert_eq!(h2, HyperRectangle(Point([0.0, 1.0]), Point([2.0, 2.0])));
-    }
 
     #[test]
     fn tree_initialize() {

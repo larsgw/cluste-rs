@@ -1,18 +1,9 @@
+pub use self::hyper_rectangle::*;
 pub use self::mrkd::*;
+pub use self::point::*;
 pub use self::quickselect::*;
 
+mod hyper_rectangle;
 mod mrkd;
+mod point;
 mod quickselect;
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Point<const N: usize> ([f64; N]);
-
-#[cfg(test)]
-mod tests {
-    use super::Point;
-
-    #[test]
-    fn it_works() {
-        Point([0.0, 0.2, 0.5]);
-    }
-}

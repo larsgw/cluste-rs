@@ -1,4 +1,4 @@
-use crate::Point;
+use crate::point::Point;
 
 fn partition<const N: usize>(
     list: &mut Vec<Point<N>>,
@@ -48,7 +48,7 @@ pub fn median<const N: usize>(points: &[Point<N>], d: usize) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::Point;
+    use crate::point::Point;
     use super::median;
 
     #[test]
