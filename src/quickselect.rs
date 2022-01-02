@@ -1,7 +1,7 @@
 use crate::point::Point;
 
-fn partition<const N: usize>(
-    list: &mut Vec<Point<N>>,
+fn partition<const M: usize>(
+    list: &mut Vec<Point<M>>,
     left: usize,
     right: usize,
     pivot_index: usize,
@@ -22,7 +22,7 @@ fn partition<const N: usize>(
 
 /// Implementation of the quickselect algorithm for determining the median.
 /// Adapted from the pseudo-code on Wikipedia (<https://en.wikipedia.org/wiki/Quickselect>)
-pub fn median<const N: usize>(points: &[Point<N>], d: usize) -> f64 {
+pub fn median<const M: usize>(points: &[Point<M>], d: usize) -> f64 {
     let mut list = points.to_vec();
 
     let length = list.len();

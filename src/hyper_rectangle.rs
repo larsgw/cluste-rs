@@ -1,10 +1,10 @@
 use crate::point::Point;
 
 #[derive(PartialEq, Debug)]
-pub struct HyperRectangle<const N: usize> (pub Point<N>, pub Point<N>);
+pub struct HyperRectangle<const M: usize> (pub Point<M>, pub Point<M>);
 
-impl<const N: usize> HyperRectangle<N> {
-    pub fn new(a: Point<N>, b: Point<N>) -> Self {
+impl<const M: usize> HyperRectangle<M> {
+    pub fn new(a: Point<M>, b: Point<M>) -> Self {
         HyperRectangle(a, b)
     }
 
@@ -23,9 +23,9 @@ impl<const N: usize> HyperRectangle<N> {
     /// closest(x, h) as defined in Section 2 (p. 278)
     ///
     /// Time complexity: O(M)
-    pub fn closest(&self, point: &Point<N>) -> Point<N> {
-        let mut coords = [0.0; N];
-        for d in 0..N {
+    pub fn closest(&self, point: &Point<M>) -> Point<M> {
+        let mut coords = [0.0; M];
+        for d in 0..M {
             coords[d] = point.0[d].clamp(self.0.0[d], self.1.0[d]);
         }
         Point(coords)
@@ -34,16 +34,16 @@ impl<const N: usize> HyperRectangle<N> {
     /// d(x, h) as defined in Section 2 (p. 278)
     ///
     /// Time complexity: O(M)
-    pub fn distance(&self, point: &Point<N>) -> f64 {
+    pub fn distance(&self, point: &Point<M>) -> f64 {
         self.closest(point).distance(point)
     }
 
     /// width(h) as defined in Section 2 (p. 278)
     ///
     /// Time complexity: O(M)
-    pub fn width(&self) -> Point<N> {
-        let mut coords = [0.0; N];
-        for d in 0..N {
+    pub fn width(&self) -> Point<M> {
+        let mut coords = [0.0; M];
+        for d in 0..M {
             coords[d] = self.1.0[d] - self.0.0[d];
         }
         Point(coords)

@@ -8,35 +8,35 @@ use crate::point::{get_range, Point};
 use crate::quickselect::median;
 
 #[derive(PartialEq, Debug)]
-pub struct Tree<const N: usize> {
+pub struct Tree<const M: usize> {
     /// hyper-rectangle boundaries
-    h: HyperRectangle<N>,
+    h: HyperRectangle<M>,
 
     /// node information
-    node: Box<Node<N>>
+    node: Box<Node<M>>
 }
 
 #[derive(PartialEq, Debug)]
-pub enum Node<const N: usize> {
-    NonLeaf(NonLeaf<N>),
-    Leaf(Point<N>)
+pub enum Node<const M: usize> {
+    NonLeaf(NonLeaf<M>),
+    Leaf(Point<M>)
 }
 
 #[derive(PartialEq, Debug)]
-pub struct NonLeaf<const N: usize> {
+pub struct NonLeaf<const M: usize> {
     /// split dimension
     d: usize,
     /// split value
     v: f64,
 
     /// left child
-    l: Tree<N>,
+    l: Tree<M>,
     /// right child
-    r: Tree<N>
+    r: Tree<M>
 }
 
-impl<const N: usize> Tree<N> {
-    pub fn initialize(points: &[Point<N>]) -> Self {
+impl<const M: usize> Tree<M> {
+    pub fn initialize(points: &[Point<M>]) -> Self {
         let (min, max) = get_range(points);
         let h = HyperRectangle(min, max);
         let d = 0;
@@ -44,7 +44,7 @@ impl<const N: usize> Tree<N> {
         Self::make_node(points, h, d)
     }
 
-    pub fn make_node(points: &[Point<N>], h: HyperRectangle<N>, d: usize) -> Self {
+    pub fn make_node(points: &[Point<M>], h: HyperRectangle<M>, d: usize) -> Self {
         let node = if points.len() == 1 {
             Node::Leaf(points[0])
         } else {
@@ -56,8 +56,8 @@ impl<const N: usize> Tree<N> {
         Self { h, node: Box::new(node) }
     }
 
-    pub fn split_points(points: &[Point<N>], h: &HyperRectangle<N>, d: usize, v: f64) -> (Self, Self) {
-        let new_d = (d + 1) % N;
+    pub fn split_points(points: &[Point<M>], h: &HyperRectangle<M>, d: usize, v: f64) -> (Self, Self) {
+        let new_d = (d + 1) % M;
         let len = points.len();
 
         let (h1, h2) = h.split(d, v);
