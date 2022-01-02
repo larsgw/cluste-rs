@@ -62,11 +62,6 @@ mod tests {
     use super::Point;
 
     #[test]
-    fn it_works() {
-        Point([0.0, 0.2, 0.5]);
-    }
-
-    #[test]
     fn distance() {
         assert_eq!(Point::distance(
             &Point([1.0, 2.0, 3.0]),

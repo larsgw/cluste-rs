@@ -56,7 +56,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn hyper_rectangle_split() {
+    fn split() {
         let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
         let (h1, h2) = h.split(1, 1.0);
         assert_eq!(h1, HyperRectangle(Point([0.0, 0.0]), Point([2.0, 1.0])));
@@ -64,21 +64,21 @@ mod tests {
     }
 
     #[test]
-    fn hyper_rectangle_closest() {
+    fn closest() {
         let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
         let point = Point([-2.0, 3.0]);
         assert_eq!(h.closest(&point), Point([0.0, 2.0]));
     }
 
     #[test]
-    fn hyper_rectangle_distance() {
+    fn distance() {
         let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
         let point = Point([-2.0, 3.0]);
         assert_eq!(h.distance(&point), 2.23606797749979);
     }
 
     #[test]
-    fn hyper_rectangle_width() {
+    fn width() {
         let h = HyperRectangle(Point([1.0, 0.0]), Point([2.0, 2.0]));
         assert_eq!(h.width(), Point([1.0, 2.0]));
     }
