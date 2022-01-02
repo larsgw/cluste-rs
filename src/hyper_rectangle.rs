@@ -27,6 +27,10 @@ impl<const N: usize> HyperRectangle<N> {
         }
         Point(coords)
     }
+
+    fn distance(&self, point: &Point<N>) -> f64 {
+        self.closest(point).distance(point)
+    }
 }
 
 #[cfg(test)]
@@ -47,5 +51,12 @@ mod tests {
         let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
         let point = Point([-2.0, 3.0]);
         assert_eq!(h.closest(&point), Point([0.0, 2.0]));
+    }
+
+    #[test]
+    fn hyper_rectangle_distance() {
+        let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
+        let point = Point([-2.0, 3.0]);
+        assert_eq!(h.distance(&point), 2.23606797749979);
     }
 }
