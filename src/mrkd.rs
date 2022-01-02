@@ -4,7 +4,7 @@
 #![allow(unreachable_code)]
 
 use crate::hyper_rectangle::HyperRectangle;
-use crate::point::Point;
+use crate::point::{get_range, Point};
 use crate::quickselect::median;
 
 #[derive(PartialEq, Debug)]
@@ -37,17 +37,8 @@ pub struct NonLeaf<const N: usize> {
 
 impl<const N: usize> Tree<N> {
     pub fn initialize(points: &[Point<N>]) -> Self {
-        let mut min = [f64::INFINITY; N];
-        let mut max = [f64::NEG_INFINITY; N];
-
-        for point in points {
-            for d in 0..N {
-                if point.0[d] < min[d] { min[d] = point.0[d]; }
-                if point.0[d] > max[d] { max[d] = point.0[d]; }
-            }
-        }
-
-        let h = HyperRectangle(Point(min), Point(max));
+        let (min, max) = get_range(points);
+        let h = HyperRectangle(min, max);
         let d = 0;
 
         Self::make_node(points, h, d)

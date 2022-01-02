@@ -14,6 +14,21 @@ impl<const N: usize> Point<N> {
     }
 }
 
+/// Time complexity: O(M)
+pub fn get_range<const N: usize>(points: &[Point<N>]) -> (Point<N>, Point<N>) {
+    let mut min = [f64::INFINITY; N];
+    let mut max = [f64::NEG_INFINITY; N];
+
+    for point in points {
+        for d in 0..N {
+            if point.0[d] < min[d] { min[d] = point.0[d]; }
+            if point.0[d] > max[d] { max[d] = point.0[d]; }
+        }
+    }
+
+    (Point(min), Point(max))
+}
+
 #[cfg(test)]
 mod tests {
     use super::Point;
