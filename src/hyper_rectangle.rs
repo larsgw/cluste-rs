@@ -19,6 +19,14 @@ impl<const N: usize> HyperRectangle<N> {
             HyperRectangle(b, self.1),
         )
     }
+
+    fn closest(&self, point: &Point<N>) -> Point<N> {
+        let mut coords = [0.0; N];
+        for d in 0..N {
+            coords[d] = point.0[d].clamp(self.0.0[d], self.1.0[d]);
+        }
+        Point(coords)
+    }
 }
 
 #[cfg(test)]
@@ -32,5 +40,12 @@ mod tests {
         let (h1, h2) = h.split(1, 1.0);
         assert_eq!(h1, HyperRectangle(Point([0.0, 0.0]), Point([2.0, 1.0])));
         assert_eq!(h2, HyperRectangle(Point([0.0, 1.0]), Point([2.0, 2.0])));
+    }
+
+    #[test]
+    fn hyper_rectangle_closest() {
+        let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
+        let point = Point([-2.0, 3.0]);
+        assert_eq!(h.closest(&point), Point([0.0, 2.0]));
     }
 }
