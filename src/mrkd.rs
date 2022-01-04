@@ -1,8 +1,3 @@
-#![allow(unused_imports)]
-#![allow(unused_variables)]
-#![allow(dead_code)]
-#![allow(unreachable_code)]
-
 use crate::hyper_rectangle::HyperRectangle;
 use crate::point::{get_range, Point};
 use crate::quickselect::median;

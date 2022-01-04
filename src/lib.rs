@@ -1,5 +1,8 @@
-pub mod hyper_rectangle;
-pub mod k_means;
-pub mod mrkd;
-pub mod point;
-pub mod quickselect;
+pub use clusterer::*;
+
+mod centers;
+mod clusterer;
+mod hyper_rectangle;
+mod mrkd;
+mod point;
+mod quickselect;
