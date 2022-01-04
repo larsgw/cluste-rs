@@ -1,6 +1,7 @@
 use crate::hyper_rectangle::HyperRectangle;
 use crate::point::{get_range, Point};
 use crate::quickselect::median;
+use rand::Rng;
 
 #[derive(PartialEq, Debug)]
 pub struct Tree<const M: usize> {
@@ -40,15 +41,15 @@ pub struct NonLeaf<const M: usize> {
 }
 
 impl<const M: usize> Tree<M> {
-    pub fn initialize(points: &[Point<M>]) -> Self {
+    pub fn initialize(points: &[Point<M>], rng: &mut impl Rng) -> Self {
         let (min, max) = get_range(points);
         let h = HyperRectangle(min, max);
         let d = 0;
 
-        Self::make_node(points, h, d)
+        Self::make_node(points, h, d, rng)
     }
 
-    pub fn make_node(points: &[Point<M>], h: HyperRectangle<M>, d: usize) -> Self {
+    fn make_node(points: &[Point<M>], h: HyperRectangle<M>, d: usize, rng: &mut impl Rng) -> Self {
         let number_of_points = points.len();
         let mut euclidean_norm_sum = 0.0;
         let mut center_of_mass = Point::default();
@@ -61,8 +62,8 @@ impl<const M: usize> Tree<M> {
         let node = if points.len() == 1 {
             Node::Leaf(points[0])
         } else {
-            let v = median(points, d);
-            let (l, r) = Self::split_points(points, &h, d, v);
+            let v = median(points, d, rng);
+            let (l, r) = Self::split_points(points, &h, d, v, rng);
             Node::NonLeaf(NonLeaf { d, v, l, r})
         };
 
@@ -75,7 +76,7 @@ impl<const M: usize> Tree<M> {
         }
     }
 
-    pub fn split_points(points: &[Point<M>], h: &HyperRectangle<M>, d: usize, v: f64) -> (Self, Self) {
+    fn split_points(points: &[Point<M>], h: &HyperRectangle<M>, d: usize, v: f64, rng: &mut impl Rng) -> (Self, Self) {
         let new_d = (d + 1) % M;
         let len = points.len();
 
@@ -92,8 +93,8 @@ impl<const M: usize> Tree<M> {
         }
 
         (
-            Self::make_node(&p1, h1, new_d),
-            Self::make_node(&p2, h2, new_d)
+            Self::make_node(&p1, h1, new_d, rng),
+            Self::make_node(&p2, h2, new_d, rng)
         )
     }
 }
@@ -102,17 +103,20 @@ impl<const M: usize> Tree<M> {
 mod tests {
     use crate::hyper_rectangle::HyperRectangle;
     use crate::point::Point;
+    use rand::SeedableRng;
+    use rand::rngs::StdRng;
     use super::*;
 
     #[test]
     fn tree_initialize() {
+        let mut rng = StdRng::seed_from_u64(0);
         let points = vec![
             Point([0.5, 0.5]),
             Point([1.5, 0.5]),
             Point([0.5, 1.5]),
             Point([1.5, 1.5])
         ];
-        let tree = Tree::initialize(&points);
+        let tree = Tree::initialize(&points, &mut rng);
 
         assert_eq!(tree, Tree {
             h: HyperRectangle(Point([0.5, 0.5]), Point([1.5, 1.5])),

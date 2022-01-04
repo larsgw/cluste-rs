@@ -1,4 +1,5 @@
 use crate::point::Point;
+use rand::Rng;
 
 fn partition<const M: usize>(
     list: &mut Vec<Point<M>>,
@@ -22,7 +23,7 @@ fn partition<const M: usize>(
 
 /// Implementation of the quickselect algorithm for determining the median.
 /// Adapted from the pseudo-code on Wikipedia (<https://en.wikipedia.org/wiki/Quickselect>)
-pub fn median<const M: usize>(points: &[Point<M>], d: usize) -> f64 {
+pub fn median<const M: usize>(points: &[Point<M>], d: usize, rng: &mut impl Rng) -> f64 {
     let mut list = points.to_vec();
 
     let length = list.len();
@@ -34,7 +35,7 @@ pub fn median<const M: usize>(points: &[Point<M>], d: usize) -> f64 {
         if left == right {
             return list[left].0[d];
         }
-        let pivot_index = k;
+        let pivot_index = left + rand::seq::index::sample(rng, right - left, 1).index(0);
         let sorted_pivot_index = partition(&mut list, left, right, pivot_index, d);
         if k == sorted_pivot_index {
             return list[k].0[d];
@@ -49,10 +50,13 @@ pub fn median<const M: usize>(points: &[Point<M>], d: usize) -> f64 {
 #[cfg(test)]
 mod tests {
     use crate::point::Point;
+    use rand::SeedableRng;
+    use rand::rngs::StdRng;
     use super::median;
 
     #[test]
     fn even() {
+        let mut rng = StdRng::seed_from_u64(0);
         let points = vec![
             Point([1.0]),
             Point([2.0]),
@@ -65,11 +69,12 @@ mod tests {
             Point([7.0]),
             Point([3.0]),
         ];
-        assert_eq!(median(&points, 0), 5.0);
+        assert_eq!(median(&points, 0, &mut rng), 5.0);
     }
 
     #[test]
     fn odd() {
+        let mut rng = StdRng::seed_from_u64(0);
         let points = vec![
             Point([1.0]),
             Point([2.0]),
@@ -81,6 +86,6 @@ mod tests {
             Point([7.0]),
             Point([3.0]),
         ];
-        assert_eq!(median(&points, 0), 5.0);
+        assert_eq!(median(&points, 0, &mut rng), 5.0);
     }
 }

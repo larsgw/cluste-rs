@@ -47,7 +47,7 @@ impl<const K: usize, const M: usize, const R: usize> KMeans<K, M, R> {
         };
         let mut centers = Centers::new(Self::random_points(points, &mut rng));
         let tree = match algorithm {
-            Algorithm::Simple => Option::Some(Tree::initialize(points)),
+            Algorithm::Simple => Option::Some(Tree::initialize(points, &mut rng)),
             Algorithm::Naive => Option::None
         };
 
