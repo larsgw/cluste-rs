@@ -42,6 +42,18 @@ impl<const M: usize> std::ops::Div<usize> for Point<M> {
     }
 }
 
+impl<const M: usize> std::ops::Mul<usize> for Point<M> {
+    type Output = Self;
+
+    fn mul(self, other: usize) -> Self {
+        let mut coords = [0.0; M];
+        for d in 0..M {
+            coords[d] = self.0[d] * (other as f64);
+        }
+        Self(coords)
+    }
+}
+
 /// Time complexity: O(M)
 pub fn get_range<const M: usize>(points: &[Point<M>]) -> (Point<M>, Point<M>) {
     let mut min = [f64::INFINITY; M];

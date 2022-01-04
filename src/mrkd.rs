@@ -10,19 +10,19 @@ use crate::quickselect::median;
 #[derive(PartialEq, Debug)]
 pub struct Tree<const M: usize> {
     /// Hyper-rectangle boundaries
-    h: HyperRectangle<M>,
+    pub h: HyperRectangle<M>,
 
     /// Number of points in contained leaf nodes
-    number_of_points: usize,
+    pub number_of_points: usize,
 
     /// Center of mass of contained points
-    center_of_mass: Point<M>,
+    pub center_of_mass: Point<M>,
 
     /// Sum of Euclidean norms of contained points
-    euclidean_norm_sum: f64,
+    pub euclidean_norm_sum: f64,
 
     /// Node information
-    node: Box<Node<M>>
+    pub node: Box<Node<M>>
 }
 
 #[derive(PartialEq, Debug)]
@@ -39,9 +39,9 @@ pub struct NonLeaf<const M: usize> {
     v: f64,
 
     /// left child
-    l: Tree<M>,
+    pub l: Tree<M>,
     /// right child
-    r: Tree<M>
+    pub r: Tree<M>
 }
 
 impl<const M: usize> Tree<M> {
