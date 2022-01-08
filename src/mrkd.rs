@@ -27,6 +27,15 @@ pub enum Node<const M: usize> {
     Leaf(Point<M>)
 }
 
+impl<const M: usize> Node<M> {
+    pub fn get_points(&self) -> Box<dyn Iterator<Item = &Point<M>> + '_> {
+        match self {
+            Node::NonLeaf(node) => Box::new(node.l.get_points().chain(node.r.get_points())),
+            Node::Leaf(point) => Box::new(std::iter::once(point))
+        }
+    }
+}
+
 #[derive(PartialEq, Debug)]
 pub struct NonLeaf<const M: usize> {
     /// split dimension
@@ -96,6 +105,10 @@ impl<const M: usize> Tree<M> {
             Self::make_node(&p1, h1, new_d, rng),
             Self::make_node(&p2, h2, new_d, rng)
         )
+    }
+
+    pub fn get_points(&self) -> Box<dyn Iterator<Item = &Point<M>> + '_> {
+        self.node.get_points()
     }
 }
 
