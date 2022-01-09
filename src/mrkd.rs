@@ -59,6 +59,7 @@ impl<const M: usize> Tree<M> {
     }
 
     fn make_node(points: &[Point<M>], h: HyperRectangle<M>, d: usize, rng: &mut impl Rng) -> Self {
+        // Determine the cached information that makes this a mrkd-tree instead of a kd-tree
         let number_of_points = points.len();
         let mut euclidean_norm_sum = 0.0;
         let mut center_of_mass = Point::default();
@@ -69,9 +70,12 @@ impl<const M: usize> Tree<M> {
         center_of_mass = center_of_mass / number_of_points;
 
         let node = if points.len() == 1 {
+            // If only one point remains, make a simple leaf node
             Node::Leaf(points[0])
         } else {
+            // If more points remain, determine the split value
             let v = median(points, d, rng);
+            // And split the points accordingly
             let (l, r) = Self::split_points(points, &h, d, v, rng);
             Node::NonLeaf(NonLeaf { d, v, l, r})
         };
@@ -86,13 +90,16 @@ impl<const M: usize> Tree<M> {
     }
 
     fn split_points(points: &[Point<M>], h: &HyperRectangle<M>, d: usize, v: f64, rng: &mut impl Rng) -> (Self, Self) {
+        // Determine the next split dimension
         let new_d = (d + 1) % M;
         let len = points.len();
 
+        // Split the hyper-rectangle
         let (h1, h2) = h.split(d, v);
         let mut p1 = Vec::with_capacity(len / 2 + 1);
         let mut p2 = Vec::with_capacity(len / 2 + 1);
 
+        // Divide the points
         for point in points {
             if point.0[d] <= v {
                 p1.push(point.to_owned())
@@ -101,6 +108,7 @@ impl<const M: usize> Tree<M> {
             }
         }
 
+        // Make nodes for the two new hyper-rectangles
         (
             Self::make_node(&p1, h1, new_d, rng),
             Self::make_node(&p2, h2, new_d, rng)

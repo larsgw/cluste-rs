@@ -40,12 +40,16 @@ impl<const K: usize, const M: usize, const R: usize> KMeans<K, M, R> {
     }
 
     fn new(points: &[Point<M>; R], algorithm: Algorithm, random_state: Option<u64>) -> Self {
-        // Initialize centers
+        // Initialize randomness
         let mut rng = match random_state {
             Option::Some(seed) => StdRng::seed_from_u64(seed),
             None => StdRng::from_entropy()
         };
+
+        // Initialize centers
         let mut centers = Centers::new(Self::random_points(points, &mut rng));
+
+        // Initialize tree when necessary
         let tree = match algorithm {
             Algorithm::Simple => Option::Some(Tree::initialize(points, &mut rng)),
             Algorithm::Naive => Option::None
@@ -59,6 +63,7 @@ impl<const K: usize, const M: usize, const R: usize> KMeans<K, M, R> {
 
             match algorithm {
                 Algorithm::Simple => {
+                    // Use Update(h, C)
                     let updated = centers.update(&tree.as_ref().unwrap());
                     new_centers = updated.0;
                     new_counts = updated.1;

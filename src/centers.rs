@@ -25,12 +25,15 @@ impl<const K: usize, const M: usize> Centers<K, M> {
         let mut counts = [0; K];
 
         match tree.node.deref() {
+            // If the node is not a leaf node, check if the hyper-rectangle has an owner
             Node::NonLeaf(node) => {
                 match self.owner(&tree.h) {
+                    // If it does, update the centers according to the cached info in the node
                     Some(k) => {
                         centers[k] = centers[k] + tree.center_of_mass * tree.number_of_points;
                         counts[k] = counts[k] + tree.number_of_points;
                     },
+                    // Else, descend in the child nodes
                     None => {
                         let (centers_l, counts_l) = self.update(&node.l);
                         let (centers_r, counts_r) = self.update(&node.r);
@@ -41,6 +44,7 @@ impl<const K: usize, const M: usize> Centers<K, M> {
                     }
                 };
             },
+            // If the node is a leaf node, update the centers as normal
             Node::Leaf(point) => {
                 let k = self.closest(point);
                 centers[k] = centers[k] + point.clone();
@@ -51,6 +55,10 @@ impl<const K: usize, const M: usize> Centers<K, M> {
         (centers, counts)
     }
 
+    /// Closest center to a point. In this case, no special action is taken when multiple centers
+    /// are equally close.
+    ///
+    /// Time complexity: O(k * M)
     pub fn closest(&self, point: &Point<M>) -> usize {
         let mut min_d = f64::INFINITY;
         let mut min_c = 0;
@@ -70,8 +78,10 @@ impl<const K: usize, const M: usize> Centers<K, M> {
     ///
     /// Time complexity: O(k * M)
     pub fn owner(&self, h: &HyperRectangle<M>) -> Option<usize> {
+        // Find the center closest to the hyper-rectangle. If there are multiple, return early
         let c1 = self.min_d(h)?;
 
+        // Else, check if c1 dominates every other center
         for c2 in 0..K {
             if c1 != c2 && !self.dominates(c1, c2, h) {
                 return Option::None;
@@ -111,6 +121,7 @@ impl<const K: usize, const M: usize> Centers<K, M> {
     ///
     /// Time complexity: O(M)
     fn dominates(&self, c1: usize, c2: usize, h: &HyperRectangle<M>) -> bool {
+        // Find the point p in h that is the furthest in the direction c2 - c1
         let mut p = [0.0; M];
         for d in 0..M {
             p[d] = if self.0[c1].0[d] < self.0[c2].0[d] {
@@ -120,6 +131,7 @@ impl<const K: usize, const M: usize> Centers<K, M> {
             };
         }
 
+        // If the distance to that point is shorter from c1 than from c2, c1 dominates c2
         let point = Point(p);
         point.distance(&self.0[c1]) < point.distance(&self.0[c2])
     }
