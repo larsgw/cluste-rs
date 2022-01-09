@@ -14,6 +14,7 @@ Run `cargo test` to run the unit tests.
 cargo run --release < input.csv > ouptut.csv
 ```
 
+  - Change the constants in lines 6–10 of `src/main.rs` to match the input data.
   - `input.csv` should contain only numeric columns to run k-means clustering on.
   - `output.csv` will contain the center coordinates.
   - Timing information will be printed to standard error.
