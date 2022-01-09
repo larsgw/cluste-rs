@@ -24,8 +24,10 @@ pub enum Algorithm {
 
 /// Implements [k-means clustering](https://en.wikipedia.org/wiki/K-means_clustering).
 pub struct KMeans<const K: usize, const M: usize, const R: usize> {
-    centers: [Point<M>; K],
-    point_centers: [usize; R]
+    /// The coordinates of the k means.
+    pub centers: [Point<M>; K],
+    /// The index of the center that each point belongs to.
+    pub point_centers: [usize; R]
 }
 
 impl<const K: usize, const M: usize, const R: usize> KMeans<K, M, R> {
