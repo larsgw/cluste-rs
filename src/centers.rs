@@ -97,20 +97,20 @@ impl<const K: usize, const M: usize> Centers<K, M> {
     fn min_d(&self, h: &HyperRectangle<M>) -> Option<usize> {
         let mut min_d = f64::INFINITY;
         let mut min_c = 0;
-        let mut multiple_closest = false;
+        let mut single_closest = true;
 
         for c in 0..K {
             let d = h.distance(&self.0[c]);
             if d == min_d {
-                multiple_closest = true;
+                single_closest = false;
             } else if d < min_d {
-                multiple_closest = false;
+                single_closest = true;
                 min_d = d;
                 min_c = c;
             }
         }
 
-        if multiple_closest {
+        if single_closest {
             Option::Some(min_c)
         } else {
             Option::None
