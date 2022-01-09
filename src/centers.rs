@@ -121,13 +121,13 @@ impl<const K: usize, const M: usize> Centers<K, M> {
 
 #[cfg(test)]
 mod tests {
-    // use crate::point::Point;
-    // use super::*;
+    use crate::point::Point;
+    use super::*;
 
-    // #[test]
-    // fn owner() {
-    //     let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
-    //     let centers = Centers::<2, 2>::new([Point([-2.0, -2.0]), Point([3.0, 1.0])]);
-    //     assert_eq!(centers.owner(&h), Option::Some(Point([3.0, 1.0])));
-    // }
+    #[test]
+    fn owner() {
+        let h = HyperRectangle(Point([0.0, 0.0]), Point([2.0, 2.0]));
+        let centers = Centers::<2, 2>::new([Point([-2.5, -2.5]), Point([3.0, 1.0])]);
+        assert_eq!(centers.owner(&h), Option::Some(1));
+    }
 }
