@@ -1,4 +1,5 @@
 pub use clusterer::*;
+pub use point::Point;
 
 mod centers;
 mod clusterer;
