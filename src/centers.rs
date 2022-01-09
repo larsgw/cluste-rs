@@ -105,8 +105,6 @@ impl<const K: usize, const M: usize> Centers<K, M> {
     ///
     /// Time complexity: O(M)
     fn dominates(&self, c1: usize, c2: usize, h: &HyperRectangle<M>) -> bool {
-        // TODO: Optimize
-        // tree.get_points().all(|&point| point.distance(&self.0[c1]) < point.distance(&self.0[c2]))
         let mut p = [0.0; M];
         for d in 0..M {
             p[d] = if self.0[c1].0[d] < self.0[c2].0[d] { h.1.0[d] } else { h.0.0[d] };
