@@ -19,14 +19,14 @@ impl<const K: usize, const M: usize> Centers<K, M> {
 
     /// Update(h, C) as defined in Section 3.1 (p. 280)
     ///
-    /// Time complexity: worst case O(r^2 * k * M)
+    /// Time complexity: worst case O(r * k * M)
     pub fn update(&self, tree: &Tree<M>) -> ([Point<M>; K], [usize; K]) {
         let mut centers = [(); K].map(|_| Point::<M>::default());
         let mut counts = [0; K];
 
         match tree.node.deref() {
             Node::NonLeaf(node) => {
-                match self.owner(tree) {
+                match self.owner(&tree.h) {
                     Some(k) => {
                         centers[k] = centers[k] + tree.center_of_mass * tree.number_of_points;
                         counts[k] = counts[k] + tree.number_of_points;
@@ -68,12 +68,12 @@ impl<const K: usize, const M: usize> Centers<K, M> {
 
     /// owner_C(h) as defined in Section 3, Definition 1 (p. 278)
     ///
-    /// Time complexity: O(r * k * M)
-    pub fn owner(&self, tree: &Tree<M>) -> Option<usize> {
-        let c1 = self.min_d(&tree.h)?;
+    /// Time complexity: O(k * M)
+    pub fn owner(&self, h: &HyperRectangle<M>) -> Option<usize> {
+        let c1 = self.min_d(h)?;
 
         for c2 in 0..K {
-            if !self.dominates(c1, c2, tree) {
+            if !self.dominates(c1, c2, h) {
                 return Option::None;
             }
         }
@@ -103,9 +103,17 @@ impl<const K: usize, const M: usize> Centers<K, M> {
 
     /// domination as defined in Section 3, Definition 3 (p. 279)
     ///
-    /// Time complexity: O(r * M)
-    fn dominates(&self, c1: usize, c2: usize, tree: &Tree<M>) -> bool {
-        tree.get_points().all(|&point| point.distance(&self.0[c1]) < point.distance(&self.0[c2]))
+    /// Time complexity: O(M)
+    fn dominates(&self, c1: usize, c2: usize, h: &HyperRectangle<M>) -> bool {
+        // TODO: Optimize
+        // tree.get_points().all(|&point| point.distance(&self.0[c1]) < point.distance(&self.0[c2]))
+        let mut p = [0.0; M];
+        for d in 0..M {
+            p[d] = if self.0[c1].0[d] < self.0[c2].0[d] { h.1.0[d] } else { h.0.0[d] };
+        }
+
+        let point = Point(p);
+        point.distance(&self.0[c1]) < point.distance(&self.0[c2])
     }
 }
 
