@@ -17,7 +17,7 @@ fn read_data() -> [Point<M>; R] {
             Err(_) => break,
             Ok(text) => {
                 let mut point = [0.0; M];
-                for (i, value) in text.split(',').skip(1).enumerate() {
+                for (i, value) in text.split(',').enumerate() {
                     point[i] = value.parse::<f64>().unwrap();
                 }
                 data.push(Point(point));
