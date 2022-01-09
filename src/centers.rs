@@ -73,7 +73,7 @@ impl<const K: usize, const M: usize> Centers<K, M> {
         let c1 = self.min_d(h)?;
 
         for c2 in 0..K {
-            if !self.dominates(c1, c2, h) {
+            if c1 != c2 && !self.dominates(c1, c2, h) {
                 return Option::None;
             }
         }
@@ -107,7 +107,11 @@ impl<const K: usize, const M: usize> Centers<K, M> {
     fn dominates(&self, c1: usize, c2: usize, h: &HyperRectangle<M>) -> bool {
         let mut p = [0.0; M];
         for d in 0..M {
-            p[d] = if self.0[c1].0[d] < self.0[c2].0[d] { h.1.0[d] } else { h.0.0[d] };
+            p[d] = if self.0[c1].0[d] < self.0[c2].0[d] {
+                h.1.0[d]
+            } else {
+                h.0.0[d]
+            };
         }
 
         let point = Point(p);
