@@ -87,18 +87,24 @@ impl<const K: usize, const M: usize> Centers<K, M> {
     fn min_d(&self, h: &HyperRectangle<M>) -> Option<usize> {
         let mut min_d = f64::INFINITY;
         let mut min_c = 0;
+        let mut multiple_closest = false;
 
         for c in 0..K {
             let d = h.distance(&self.0[c]);
             if d == min_d {
-                return Option::None;
+                multiple_closest = true;
             } else if d < min_d {
+                multiple_closest = false;
                 min_d = d;
                 min_c = c;
             }
         }
 
-        Option::Some(min_c)
+        if multiple_closest {
+            Option::Some(min_c)
+        } else {
+            Option::None
+        }
     }
 
     /// domination as defined in Section 3, Definition 3 (p. 279)
